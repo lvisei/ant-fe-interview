@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cache-requset</title>
+    <style type="text/css">
+      body {
+        padding: 20px;
+        text-align: center;
+      }
+      table {
+        width: 50%;
+        background: #ccc;
+        margin: 10px auto;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #ccc;
+      }
+      th {
+        background: #eee;
+        font-weight: normal;
+      }
+      tr {
+        background: #fff;
+      }
+      tr:hover {
+        background: #cc0;
+      }
+      td a {
+        color: #06f;
+        text-decoration: none;
+      }
+      td a:hover {
+        color: #06f;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="url" placeholder="请输入请求 URL" style="width: 350px" />
+    <select id="method">
+      <option value="get">GET</option>
+      <option value="post">POST</option>
+    </select>
+    <input type="text" id="requestData" placeholder="请输入请求数据 JSON 格式" style="width: 300px" />
+    <button id="singleRequset">单个请求接口</button>
+    <button id="multiRequset">并发请求 5 条相同接口</button>
+    <button id="reset">清空缓存</button>
+    <table id="resultPane" border-collapse="collapse">
+      <tr>
+        <th>index</th>
+        <th>url</th>
+        <th>data</th>
+        <th>result</th>
+      </tr>
+    </table>
+  </body>
+  <script src="./main.js" type="module"></script>
+</html>

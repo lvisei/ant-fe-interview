@@ -5,13 +5,21 @@ class LRUCache {
   }
 
   /**
-   * @param {number} key
-   * @return {number}
+   * @param {any} key
+   * @return {boolean}
    */
-  get(key) {
-    if (this.cache.has(key)) {
+  hasCache(key) {
+    return this.cache.has(key)
+  }
+
+  /**
+   * @param {any} key
+   * @return {number|any}
+   */
+  getCache(key) {
+    if (this.hasCache(key)) {
       // 存在即更新
-      let temp = this.cache.get(key)
+      const temp = this.cache.get(key)
       this.cache.delete(key)
       this.cache.set(key, temp)
       return temp
@@ -20,25 +28,35 @@ class LRUCache {
   }
 
   /**
-   * @param {number} key
-   * @param {number} value
+   * @param {any} key
+   * @param {any} value
    * @return {void}
    */
-  put(key, value) {
-    if (this.cache.has(key)) {
+  putCache(key, value) {
+    if (this.hasCache(key)) {
       // 存在即更新（删除后加入）
       this.cache.delete(key)
     } else if (this.cache.size >= this.capacity) {
-      // 不存在即加入
-      // 缓存超过最大值，则移除最近没有使用的
-      this.cache.delete(this.cache.keys().next().value)
+      this.deleteCache()
     }
     this.cache.set(key, value)
   }
+
+  deleteCache() {
+    // 不存在即加入
+    // 缓存超过最大值，则移除最近没有使用的
+    this.cache.delete(this.cache.keys().next().value)
+  }
+
+  deleteAllCache() {
+    this.cache = new Map()
+  }
 }
 
-const cache = new LRUCache(2)
+export default LRUCache
 
-console.log('cache.put(key, value): ', cache.put('key', 'value'))
-const param_1 = cache.get('key')
-console.log('const param_1 = cache.get(key): ', param_1)
+// const cache = new LRUCache(2)
+// cache.putCache('key', 'value')
+// cache.putCache('key1', 'value1')
+// cache.putCache('key2', 'value2')
+// console.log('cache.get(key): ', cache.getCache('key'))

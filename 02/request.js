@@ -23,12 +23,12 @@ const paramsSerializer = (params) => {
  * requset XMLHttpRequest
  * @param {String} url
  * @param {string} [method='GET' || 'POST']
- * @param {Object} [{ params, data, option }={ params: {}, data: {} }]
+ * @param {Object} [{ params, data, options }={ params: {}, data: {} }]
  * @returns {Promise}
  */
-const requset = (url, method = 'GET', { params, data, option } = { params: {}, data: {} }) => {
+const requset = (url, method = 'GET', { params, data, options } = { params: {}, data: {} }) => {
   method = method.toUpperCase()
-  const { responseType, timeout, withCredentials, header } = Object.assign({}, DefaultOption, option)
+  const { responseType, timeout, withCredentials, header } = Object.assign({}, DefaultOption, options)
   const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject()
 
   return new Promise((resolve, reject) => {
@@ -40,17 +40,17 @@ const requset = (url, method = 'GET', { params, data, option } = { params: {}, d
           const result = { data: response, status, statusText }
           resolve(result)
         } else {
-          reject(new Error({ status, statusText }))
+          reject({ status, statusText })
         }
       }
     }
 
     xhr.ontimeout = () => {
-      reject(new Error('The request for ' + url + ' timed out.'))
+      reject({ error: 'The request for ' + url + ' timed out.' })
     }
 
     xhr.onerror = (e) => {
-      reject(new Error(e))
+      reject(e)
     }
 
     if (params && Object.keys(params).length) {
@@ -74,14 +74,4 @@ const requset = (url, method = 'GET', { params, data, option } = { params: {}, d
   })
 }
 
-requset('https://admin.ywbang.icu/api/v1/pub/login/captchaid', 'GET', {
-  params: { xxx: '' },
-}).then((res) => {
-  console.log('res: ', res)
-})
-
-requset('https://api.ywbang.icu/user/login', 'POST', {
-  data: { password: '123456', username: 'admin' },
-}).then((res) => {
-  console.log('res: ', res)
-})
+export default requset
