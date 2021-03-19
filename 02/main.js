@@ -57,6 +57,7 @@ document.getElementById('multiRequset').onclick = () => {
   for (let index = 1; index <= concurrently; index++) {
     cacheRequset[type](url, data)
       .then((result) => {
+        console.log('index: ', index)
         resultPane.innerHTML += generateRowDom(url, data, result)
       })
       .catch((errr) => {

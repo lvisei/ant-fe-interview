@@ -65,12 +65,10 @@ class CacheRequset extends LRUCache {
         cacheSchema.time = Date.now()
         cacheSchema.status = CacheRequsetStatus.RESOLVED
         cacheSchema.response = deepClone(response)
-        Promise.resolve().then(() => {
-          while (cacheSchema.resolves.length) {
-            const resolve = cacheSchema.resolves.shift()
-            resolve(Promise.resolve().then(deepClone(cacheSchema.response)))
-          }
-        })
+        while (cacheSchema.resolves.length) {
+          const resolve = cacheSchema.resolves.shift()
+          resolve(deepClone(cacheSchema.response))
+        }
 
         return Promise.resolve(data)
       })
