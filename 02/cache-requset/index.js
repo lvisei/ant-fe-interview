@@ -65,6 +65,12 @@ class CacheRequset extends LRUCache {
         cacheSchema.time = Date.now()
         cacheSchema.status = CacheRequsetStatus.RESOLVED
         cacheSchema.response = deepClone(response)
+        Promise.resolve().then(() => {
+          while (cacheSchema.resolves.length) {
+            const resolve = cacheSchema.resolves.shift()
+            resolve(Promise.resolve().then(deepClone(cacheSchema.response)))
+          }
+        })
 
         return Promise.resolve(data)
       })
@@ -73,18 +79,11 @@ class CacheRequset extends LRUCache {
         cacheSchema.time = Date.now()
         cacheSchema.status = CacheRequsetStatus.REJECTED
         cacheSchema.response = deepClone(response)
-
-        return Promise.reject(error)
-      })
-      .finally(() => {
-        while (cacheSchema.resolves.length) {
-          const resolve = cacheSchema.resolves.shift()
-          resolve(deepClone(cacheSchema.response))
-        }
         while (cacheSchema.rejects.length) {
           const reject = cacheSchema.rejects.shift()
           reject(deepClone(cacheSchema.response))
         }
+        return Promise.reject(error)
       })
   }
 
