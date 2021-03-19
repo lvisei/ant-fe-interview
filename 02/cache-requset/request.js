@@ -33,14 +33,14 @@ const requset = (url, method = 'GET', { params, data, options } = { params: {}, 
 
   return new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
-      // 0, Instantiate; 1，open()；2，send()；3，response；4，end
+      // 0, instantiate; 1，open()；2，send()；3，response；4，end
       if (xhr.readyState === 4) {
         const { status, statusText, response } = xhr
         if ((status >= 200 && status < 300) || status === 304) {
-          const result = { data: response, status, statusText }
+          const result = { response, status, statusText }
           resolve(result)
         } else {
-          reject({ status, statusText })
+          reject({ status, statusText, response })
         }
       }
     }
