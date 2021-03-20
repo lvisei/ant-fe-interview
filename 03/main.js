@@ -1,86 +1,78 @@
-class Canvas {
-  constructor(parent = document.body, width = 400, height = 400) {
-    this.canvas = document.createElement('canvas')
-    this.canvas.width = width
-    this.canvas.height = height
-    parent.appendChild(this.canvas)
-    this.ctx = this.canvas.getContext('2d')
+import Display from './display.js'
+import { throttle } from './helper.js'
 
-    this.reversalCoordinateSystem()
+class CirclesDisplay extends Display {
+  constructor(parent, width, height, count = 500, radius = 10) {
+    super(parent, width, height)
+    this.circles = this.randomCircles(count, radius)
+
+    this.drawCircles(this.circles)
+
+    const onMousemove = throttle(this.onMousemove, 100)
+    this.canvas.addEventListener('mousemove', onMousemove)
   }
 
-  static degreeToRadian(degree) {
-    return (degree * Math.PI) / 180
+  randomCircles(count = 500, radius = 10) {
+    const circles = []
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * this.canvas.width
+      const y = Math.random() * this.canvas.height
+      const fillColor = Display.randomColor(240)
+      const circle = { point: [x, y], radius, options: { fillColor } }
+      circles.push(circle)
+    }
+
+    return circles
   }
 
-  reversalCoordinateSystem() {
-    this.ctx.translate(0, this.canvas.height)
-    this.ctx.scale(1, -1)
+  isCursorInCircle(cursorX, cursorY, circle) {
+    const { point, radius } = circle
+    const dx = cursorX - point[0]
+    const dy = cursorY - point[1]
+    if (dx ** 2 + dy ** 2 <= radius ** 2) {
+      return true
+    }
+
+    return false
   }
 
-  sync(lines) {
-    this.clearDisplay()
-    this.drawLines(lines)
+  findCursorInCircle(cursorX, cursorY, circles) {
+    for (let index = circles.length - 1; index >= 0; index--) {
+      const circle = circles[index]
+      if (this.isCursorInCircle(cursorX, cursorY, circle)) {
+        return index
+        break
+      }
+    }
+
+    return -1
   }
 
-  clearDisplay() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    // opacity controls the trail effect set to 1 to remove
-    this.ctx.fillStyle = 'rgba(255, 255, 255, .4)'
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-    this.ctx.strokeStyle = 'black'
-    this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height)
-  }
-
-  drawLines(lines) {
-    if (lines.length < 2) return
-    for (let index = 0; index < lines.length; index++) {
-      if (index === lines.length - 1) break
-      const item = lines[index]
-      const next = lines[index + 1]
-      this.drawLine(item, next)
+  onMousemove = (event) => {
+    const { x, y } = this.getCursorPosition(event)
+    const indexCircle = this.findCursorInCircle(x, y, this.circles)
+    console.log('indexCircle: ', indexCircle)
+    if (indexCircle !== -1) {
+      console.log('indexCircle: ', indexCircle)
     }
   }
 
-  drawLine(start = [0, 0], end = [100, 100]) {
-    this.ctx.save()
-    this.ctx.beginPath()
-    this.ctx.moveTo(...start)
-    this.ctx.lineTo(...end)
-    this.ctx.closePath()
+  reset(count = 500, radius = 10) {
+    this.circles = this.randomCircles(count, radius)
 
-    this.ctx.lineWidth = 3
-    this.ctx.strokeStyle = 'red'
-    this.ctx.stroke()
-    this.ctx.restore()
-
-    this.drawCircle(start)
-    this.drawCircle(end)
-  }
-
-  drawCircle(point = [0, 0], radius = 3, color = 'yellow') {
-    this.ctx.save()
-    this.ctx.beginPath()
-    this.ctx.arc(point[0], point[1], radius, 0, Math.PI * 2)
-    this.ctx.closePath()
-    this.ctx.lineWidth = 3
-    this.ctx.strokeStyle = 'red'
-    this.ctx.stroke()
-    this.ctx.fillStyle = color
-    this.ctx.fill()
-    this.ctx.restore()
+    this.clear()
+    this.drawCircles(this.circles)
   }
 }
 
-const display = new Canvas(document.querySelector('#display'), 800, 500)
-const lines = [
-  [100, 100],
-  [200, 150],
-  [400, 200],
-]
-display.sync(lines)
-display.sync([
-  [100, 200],
-  [200, 250],
-  [400, 300],
-])
+const WIDTH = 1000
+const HEIGHT = 600
+
+const circlesDisplay = new CirclesDisplay(document.querySelector('#display'), WIDTH, HEIGHT)
+
+// circlesDisplay.sync(CirclesDisplay.randomCircleData(700, 10))
+
+// requestAnimationFrame(function update() {
+//   display.sync(randomCircleData())
+//   requestAnimationFrame(update)
+// })

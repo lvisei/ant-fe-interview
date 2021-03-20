@@ -6,12 +6,13 @@ const API = {
   get: { URL: 'https://admin.ywbang.icu/api/v1/pub/login/captchaid', data: {} },
   post: { URL: 'https://api.ywbang.icu/user/login', data: { password: '123456', username: 'admin' } },
 }
+const $ = (el) => document.querySelector(el)
 
-const inputUrl = document.getElementById('url')
-const selectMethod = document.getElementById('method')
-const inputRequestData = document.getElementById('requestData')
-const inputConcurrently = document.getElementById('concurrently')
-const resultPane = document.querySelector('#resultPane tbody')
+const inputUrl = $('#url')
+const selectMethod = $('#method')
+const inputRequestData = $('#requestData')
+const inputConcurrently = $('#concurrently')
+const resultPane = $('#resultPane tbody')
 
 let requestIndex = 0
 
@@ -34,7 +35,7 @@ selectMethod.onchange = (e) => {
   inputRequestData.value = API[type] && JSON.stringify(API[type].data)
 }
 
-document.getElementById('singleRequset').onclick = () => {
+$('#singleRequset').onclick = () => {
   const url = inputUrl.value
   const type = selectMethod.value
   const data = JSON.parse(inputRequestData.value)
@@ -47,7 +48,7 @@ document.getElementById('singleRequset').onclick = () => {
     })
 }
 
-document.getElementById('multiRequset').onclick = () => {
+$('#multiRequset').onclick = () => {
   const concurrently = Number(inputConcurrently.value)
   if (concurrently <= 0) return
 
@@ -57,7 +58,6 @@ document.getElementById('multiRequset').onclick = () => {
   for (let index = 1; index <= concurrently; index++) {
     cacheRequset[type](url, data)
       .then((result) => {
-        console.log('index: ', index)
         resultPane.innerHTML += generateRowDom(url, data, result)
       })
       .catch((errr) => {
@@ -74,7 +74,7 @@ document.getElementById('multiRequset').onclick = () => {
   //   })
 }
 
-document.getElementById('reset').onclick = () => {
+$('#reset').onclick = () => {
   resultPane.innerHTML = ''
   requestIndex = 0
   cacheRequset.deleteAllCache()
