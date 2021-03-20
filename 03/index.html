@@ -12,11 +12,15 @@
       #display {
         margin: 20px;
       }
+      canvas {
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, 0.4);
+      }
     </style>
   </head>
   <body>
-    <button id="option1">方案一</button>
-    <button id="option2">方案二</button>
+    <button id="option1">方案一 局部重绘</button>
+    <button id="option2">方案二 离屏渲染</button>
     <div id="display"></div>
   </body>
   <script src="./main.js" type="module"></script>

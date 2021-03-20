@@ -14,7 +14,7 @@ class Display {
     return (degree * Math.PI) / 180
   }
 
-  static randomColor(range = 360, saturation = '80%', alpha = 0.6) {
+  static randomColor(range = 360, saturation = '80%', alpha = 1) {
     return `hsl(${Math.random() * range}, ${saturation}, 50%, ${alpha})`
   }
 
@@ -29,19 +29,16 @@ class Display {
   drawCircles(circles) {
     for (let index = 0; index < circles.length; index++) {
       const item = circles[index]
-      const { point, radius, options } = item
-      this.drawCircle(point, radius, options)
+      const { x, y, radius, options } = item
+      this.drawCircle(x, y, radius, options)
     }
   }
 
-  drawCircle(point = [0, 0], radius = 3, { fillColor = 'yellow', strokeColor = '', lineWidth = 0 } = {}) {
+  drawCircle(x, y, radius = 3, { fillColor = 'yellow' } = {}) {
     this.ctx.save()
     this.ctx.beginPath()
-    this.ctx.arc(point[0], point[1], radius, 0, Math.PI * 2)
+    this.ctx.arc(x, y, radius, 0, Math.PI * 2)
     this.ctx.closePath()
-    this.ctx.lineWidth = lineWidth
-    this.ctx.strokeStyle = strokeColor
-    this.ctx.stroke()
     this.ctx.fillStyle = fillColor
     this.ctx.fill()
     this.ctx.restore()
@@ -54,10 +51,6 @@ class Display {
 
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    // this.ctx.fillStyle = 'rgba(255, 255, 255, 0)'
-    // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-    this.ctx.strokeStyle = 'black'
-    this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
   reversalCoordinateSystem() {
