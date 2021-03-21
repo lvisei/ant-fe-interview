@@ -64,14 +64,6 @@ $('#multiRequset').onclick = () => {
         resultPane.innerHTML += generateRowDom(url, data, errr)
       })
   }
-
-  // Promise.all(new Array(concurrently).fill(cacheRequset[type](url, data)))
-  //   .then((results) => {
-  //     resultPane.innerHTML += results.map((result) => generateRowDom(url, data, result)).join('')
-  //   })
-  //   .catch((errr) => {
-  //     resultPane.innerHTML += generateRowDom(url, data, errr)
-  //   })
 }
 
 $('#reset').onclick = () => {
@@ -80,6 +72,4 @@ $('#reset').onclick = () => {
   cacheRequset.deleteAllCache()
 }
 
-// cacheRequset.post('https://api.ywbang.icu/user/login', {
-//   data: { password: '123456', username: 'admin' },
-// })
+// cacheRequset.post('https://api.ywbang.icu/user/login', { password: '123456', username: 'admin' })

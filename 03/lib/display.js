@@ -1,4 +1,6 @@
 class Display {
+  static activeColor = 'hsl(0, 80%, 50%, 0.7)'
+
   constructor(parent = document.body, width = 400, height = 400) {
     this.canvas = document.createElement('canvas')
     this.canvas.width = width
@@ -14,8 +16,28 @@ class Display {
     return (degree * Math.PI) / 180
   }
 
-  static randomColor(range = 360, saturation = '80%', alpha = 1) {
-    return `hsl(${Math.random() * range}, ${saturation}, 50%, ${alpha})`
+  static randomColor(range = [40, 270], saturation = '80%', alpha = 0.8) {
+    return `hsl(${Math.random() * (range[1] - range[0]) + range[0]}, ${saturation}, 50%, ${alpha})`
+  }
+
+  /**
+   * 随机生成圆的集合
+   * @param {number} [count=500]
+   * @param {number} [radius=10]
+   * @returns {Array}
+   * @memberof Display
+   */
+  randomCircles(count = 500, radius = 10) {
+    const circles = []
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * this.canvas.width
+      const y = Math.random() * this.canvas.height
+      const fillColor = Display.randomColor()
+      const circle = { x, y, radius, options: { fillColor } }
+      circles.push(circle)
+    }
+
+    return circles
   }
 
   /**
@@ -39,8 +61,7 @@ class Display {
    */
   drawCircles(circles) {
     for (let index = 0; index < circles.length; index++) {
-      const item = circles[index]
-      const { x, y, radius, options } = item
+      const { x, y, radius, options } = circles[index]
       this.drawCircle(x, y, radius, options)
     }
   }
@@ -61,6 +82,46 @@ class Display {
     this.ctx.fillStyle = fillColor
     this.ctx.fill()
     this.ctx.restore()
+  }
+
+  /**
+   * 点是否在圆内
+   * @param {Number} cursorX
+   * @param {Number} cursorY
+   * @param {Object} circle
+   * @returns {Boolean}
+   * @memberof Display
+   */
+  isCursorInCircle(cursorX, cursorY, circle) {
+    const { x, y, radius } = circle
+    const dx = cursorX - x
+    const dy = cursorY - y
+    if (dx ** 2 + dy ** 2 <= radius ** 2) {
+      return true
+    }
+
+    return false
+  }
+
+  /**
+   * 查找点在圆内的圆的索引
+   * @param {Number} cursorX
+   * @param {Number} cursorY
+   * @param {Array} circles
+   * @returns {Number}
+   * @memberof Display
+   */
+  findCursorInCircle(cursorX, cursorY, circles) {
+    // TODO: WebWorker (当圆数量上千时)
+    for (let index = circles.length - 1; index >= 0; index--) {
+      const circle = circles[index]
+      if (this.isCursorInCircle(cursorX, cursorY, circle)) {
+        return index
+        break
+      }
+    }
+
+    return -1
   }
 
   /**

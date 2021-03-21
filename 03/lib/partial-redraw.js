@@ -2,13 +2,9 @@ import Display from './display.js'
 import { throttle } from './helper.js'
 
 class PartialRedraw extends Display {
-  static colorList = ['#19DCE6', '#A5E619', '#19E643', '#1C43FF', '#E6D918', '#D6E61A', '#18E6CE']
-  static activeColor = 'hsl(0, 80%, 50%, 0.7)'
-
   constructor(parent, width, height, count = 600, radius = 10) {
     super(parent, width, height)
     this.circles = this.randomCircles(count, radius)
-    this.currentHoverCircle = null
     this.onMousemoveHander = throttle(this.onMousemove, 16)
 
     this.canvas.addEventListener('mousemove', this.onMousemoveHander)
@@ -16,72 +12,20 @@ class PartialRedraw extends Display {
   }
 
   /**
-   * 随机生成颜色
-   * @returns {String} color
-   * @memberof PartialRedraw
+   * 鼠标移动回调函数
+   * @param {MouseEvent} event
    */
-  randomColor() {
-    const index = Math.floor(Math.random() * PartialRedraw.colorList.length)
-    return PartialRedraw.colorList[index]
-  }
+  onMousemove = (event) => {
+    const { x, y } = this.getCursorPosition(event)
+    const indexCircle = this.findCursorInCircle(x, y, this.circles)
+    if (indexCircle !== -1) {
+      const activeCircle = this.circles.splice(indexCircle, 1)[0]
+      Object.assign(activeCircle.options, { fillColor: Display.activeColor })
 
-  /**
-   * 随机生成圆的集合
-   * @param {number} [count=500]
-   * @param {number} [radius=10]
-   * @returns {Array}
-   * @memberof PartialRedraw
-   */
-  randomCircles(count = 500, radius = 10) {
-    const circles = []
-    for (let i = 0; i < count; i++) {
-      const x = Math.random() * this.canvas.width
-      const y = Math.random() * this.canvas.height
-      const fillColor = this.randomColor()
-      const circle = { x, y, radius, options: { fillColor } }
-      circles.push(circle)
+      this.renderBBoxWithinCircles(activeCircle)
+      // 更新顺序
+      this.circles.push(activeCircle)
     }
-
-    return circles
-  }
-
-  /**
-   * 点是否在圆内
-   * @param {Number} cursorX
-   * @param {Number} cursorY
-   * @param {Object} circle
-   * @returns {Boolean}
-   * @memberof PartialRedraw
-   */
-  isCursorInCircle(cursorX, cursorY, circle) {
-    const { x, y, radius } = circle
-    const dx = cursorX - x
-    const dy = cursorY - y
-    if (dx ** 2 + dy ** 2 <= radius ** 2) {
-      return true
-    }
-
-    return false
-  }
-
-  /**
-   * 查找点在圆内的圆的索引
-   * @param {Number} cursorX
-   * @param {Number} cursorY
-   * @param {Array} circles
-   * @returns {Number}
-   * @memberof PartialRedraw
-   */
-  findCursorInCircle(cursorX, cursorY, circles) {
-    for (let index = circles.length - 1; index >= 0; index--) {
-      const circle = circles[index]
-      if (this.isCursorInCircle(cursorX, cursorY, circle)) {
-        return index
-        break
-      }
-    }
-
-    return -1
   }
 
   /**
@@ -143,6 +87,7 @@ class PartialRedraw extends Display {
    * @memberof PartialRedraw
    */
   getIntersectCircle(rect, circles) {
+    // TODO: WebWorker (当圆数量上千时)
     const intersectCircles = []
     for (let index = 0; index < circles.length; index++) {
       const circle = circles[index]
@@ -155,24 +100,6 @@ class PartialRedraw extends Display {
   }
 
   /**
-   * 鼠标移动回调函数
-   * @param {MouseEvent} event
-   */
-  onMousemove = (event) => {
-    const { x, y } = this.getCursorPosition(event)
-    const indexCircle = this.findCursorInCircle(x, y, this.circles)
-    if (indexCircle !== -1) {
-      const activeCircle = this.circles[indexCircle]
-      Object.assign(activeCircle.options, { fillColor: PartialRedraw.activeColor })
-      this.circles.splice(indexCircle, 1)
-
-      this.renderBBoxWithinCircles(activeCircle)
-      // 更新顺序
-      this.circles.push(activeCircle)
-    }
-  }
-
-  /**
    * 重新渲染包围盒内的图形
    * @param {Object} activeCircle
    * @memberof PartialRedraw
@@ -180,6 +107,7 @@ class PartialRedraw extends Display {
   renderBBoxWithinCircles(activeCircle) {
     const bbox = this.getCircleBBox(activeCircle)
 
+    // 清楚包围盒内的图形
     this.ctx.save()
     this.ctx.beginPath()
     this.ctx.rect(bbox.x, bbox.y, bbox.width, bbox.height)

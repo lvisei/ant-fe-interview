@@ -16,11 +16,31 @@
         cursor: pointer;
         border: 1px solid rgba(0, 0, 0, 0.4);
       }
+      #option {
+        margin-left: 100px;
+      }
+      label {
+        color: rgba(0, 0, 0, 0.8);
+      }
+      button {
+        cursor: pointer;
+      }
+      button.active {
+        color: #fff;
+        background-color: #1890ff;
+        border-color: #1890ff;
+      }
     </style>
   </head>
   <body>
-    <button id="option1">方案一 局部重绘</button>
-    <button id="option2">方案二 离屏渲染</button>
+    <label for="circleNums">请输入圆的个数: </label>
+    <input type="number" name="circleNums" id="circleNums" placeholder="请输入圆的个数" min="1" value="600" />
+    <label for="circleRadius">请输入圆的半径: </label>
+    <input type="number" id="circleRadius" placeholder="请输入圆的半径" min="1" value="15" />
+    <span id="option">
+      <button id="option1">方案一 局部重绘</button>
+      <button id="option2">方案二 离屏渲染</button>
+    </span>
     <div id="display"></div>
   </body>
   <script src="./main.js" type="module"></script>
