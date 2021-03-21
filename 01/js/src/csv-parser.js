@@ -16,7 +16,7 @@ class CsvParser {
     const { newline, separator } = this.options
     const lines = csvString.trim().split(newline)
 
-    this.rows = lines.map((line) => line.split(separator))
+    this.rows = lines.map((line) => line.trim().split(separator))
 
     this.headRow = this.rows.slice(0, 1)[0]
     this.bodyRows = this.rows.slice(1)
@@ -47,16 +47,7 @@ class CsvParser {
   }
 }
 
-const csv = `
-name,age,parent
-Bob,30,David
-David,60,
-Anna,10,Bob
-`
-const input = `
-name,age,parent
-Bob,30,David
-`
+export default CsvParser
 
 // interface Person {
 //    name: string;
@@ -64,31 +55,3 @@ Bob,30,David
 //    parent: Person[];
 //    children: Person[];
 // }
-const csvParser = new CsvParser({})
-
-const records = csvParser.parse(csv).json()
-console.log('records: ', records)
-
-const listToJsonTree = (list, { id, pid, children } = { id: 'id', pid: 'pid', children: 'children' }) => {
-  const idMap = {}
-  const jsonTree = []
-
-  list.forEach((item) => (idMap[item[id]] = item))
-
-  list.forEach((item) => {
-    const parent = idMap[item[pid]]
-    if (parent) {
-      if (!parent[children]) {
-        parent[children] = []
-      }
-      parent[children].push(item)
-    } else {
-      jsonTree.push(item)
-    }
-  })
-
-  return jsonTree
-}
-
-const jsonTree = listToJsonTree(records, { id: 'name', pid: 'parent', children: 'children' })
-console.log('jsonTree: ', JSON.stringify(jsonTree))
