@@ -19,7 +19,7 @@ Anna,10,Bob
 `;
 ```
 
-### [code](https://liuvigongzuoshi.github.io/ant-fe-interview/01/src)
+### [code](https://github.com/liuvigongzuoshi/ant-fe-interview/tree/main/01)
 
 ## 试题二
 
