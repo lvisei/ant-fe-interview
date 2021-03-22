@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cache-requset</title>
+    <style type="text/css">
+      body {
+        padding: 20px;
+        text-align: center;
+      }
+      table {
+        width: 1800px;
+        background: #ccc;
+        margin: 10px auto;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      th,
+      td {
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #ccc;
+        overflow-wrap: break-word;
+      }
+      th {
+        background: #eee;
+        font-weight: normal;
+      }
+      tr {
+        background: #fff;
+      }
+      tr:hover {
+        background: rgba(219, 219, 219, 0.404);
+      }
+      td a {
+        color: #06f;
+        text-decoration: none;
+      }
+      td a:hover {
+        color: #06f;
+        text-decoration: underline;
+      }
+      input {
+        width: 350px;
+      }
+      input[type='number'] {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="url" placeholder="请输入请求 URL" />
+    <select id="method">
+      <option value="get">GET</option>
+      <option value="post">POST</option>
+    </select>
+    <input type="text" id="requestData" placeholder="请输入请求数据 JSON 格式" />
+    <button id="singleRequset">发送单个请求</button>
+    <input type="number" id="concurrently" placeholder="请输入请求并发请求数" min="1" value="5" />
+    <button id="multiRequset">个并发请求</button>
+    <button id="reset">清空缓存</button>
+    <table id="resultPane" border-collapse="collapse">
+      <thead>
+        <tr>
+          <th width="60px">index</th>
+          <th width="350px">url</th>
+          <th width="400px">params/data</th>
+          <th>result</th>
+          <th width="100px">from cache</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </body>
+  <script src="./main.js" type="module"></script>
+</html>
