@@ -19,7 +19,7 @@ Anna,10,Bob
 `;
 ```
 
-### [code](https://github.com/liuvigongzuoshi/ant-fe-interview/tree/main/01)
+### [code](https://github.com/lvisei/ant-fe-interview/tree/main/01)
 
 ## 试题二
 
@@ -28,10 +28,10 @@ Anna,10,Bob
   - 如果有相同的请求同时并行发起，要求其中一个能挂起并且等待另外一个请求返回并读取该缓存
   - LRU机制当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。
 
-### [online preview](https://liuvigongzuoshi.github.io/ant-fe-interview/02/index.html)
+### [online preview](https://lvisei.github.io/ant-fe-interview/02/index.html)
 
 ## 试题三
 
 在一个html canvas画布上绘制上百个圆，点击其中的一个圆，将其绘制在最上面（原先的绘制不保留），并设置不同的颜色
 
-### [online preview](https://liuvigongzuoshi.github.io/ant-fe-interview/03/index.html)
+### [online preview](https://lvisei.github.io/ant-fe-interview/03/index.html)
